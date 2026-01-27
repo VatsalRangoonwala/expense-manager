@@ -19,5 +19,5 @@ app.use("/api/user", userRouter);
 app.use("/api/expense", expenseRouter);
 
 app.listen(process.env.PORT, () =>
-  console.log(`server running on port ${process.env.PORT}`),
+  console.log(`server running`),
 );
