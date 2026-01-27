@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import API from "../services/api.js";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Dashboard() {
   const { user, logout } = useContext(AuthContext);
@@ -34,24 +35,28 @@ function Dashboard() {
 
     try {
       if (editId) {
-        await API.put(`/expense/${editId}`, { title, amount, category });
-        setEditId(null);
-      } else {
-        const res = await API.post("/expense", {
-          title,
+        const res = await API.put(`/expense/${editId}`, {
+          title: title.trim(),
           amount,
           category,
         });
+        toast.success(res.data.message);
+        setEditId(null);
+      } else {
+        const res = await API.post("/expense", {
+          title: title.trim(),
+          amount,
+          category,
+        });
+        toast.success(res.data.message);
       }
 
       setTitle("");
       setAmount("");
       setCategory("");
-
       fetchExpenses();
-      //   alert(res.data.message);
     } catch (error) {
-      alert(error.response.data.message);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -60,9 +65,9 @@ function Dashboard() {
     try {
       const res = await API.delete(`/expense/${id}`);
       fetchExpenses();
-      //   alert(res.data.message);
+      toast.success(res.data.message);
     } catch (error) {
-      alert(error.response.data.message);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -112,9 +117,7 @@ function Dashboard() {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="">
-              Select Category
-            </option>
+            <option value="">Select Category</option>
             <option>Food</option>
             <option>Travel</option>
             <option>Shopping</option>

@@ -36,7 +36,7 @@ export const getExpenses = async (req, res) => {
     const expenses = await Expense.find({ user: req.user._id }).sort({
       createdAt: -1,
     });
-    return res.json(expenses);
+    return res.status(200).json(expenses);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -63,7 +63,7 @@ export const deleteExpense = async (req, res) => {
 
     await expense.deleteOne();
 
-    return res.json({
+    return res.status(200).json({
       success: true,
       message: "Expense deleted",
     });
@@ -88,11 +88,14 @@ export const updateExpense = async (req, res) => {
     const updatedExpense = await Expense.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true }
+      { new: true },
     );
 
-    res.json(updatedExpense);
-
+    return res.status(200).json({
+      success: true,
+      message: "Expense Edited",
+      updatedExpense,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

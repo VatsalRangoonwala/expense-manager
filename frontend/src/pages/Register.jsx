@@ -1,6 +1,7 @@
 import { useState } from "react";
 import API from "../services/api.js";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Register() {
   const [name, setName] = useState("");
@@ -18,10 +19,10 @@ function Register() {
         password,
       });
 
-      alert(res.data.message);
+      toast.success(res.data.message);
       navigate("/");
     } catch (error) {
-      alert(error.response.data.message);
+      toast.error(error.response.data.message);
     }
   };
 

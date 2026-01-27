@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import API from "../services/api.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -15,9 +16,10 @@ function Login() {
     try {
       const res = await API.post("/auth/login", { email, password });
       login(res.data.user, res.data.token);
+      toast.success(res.data.message);
       navigate("/");
     } catch (error) {
-      alert(error.response?.data?.message);
+      toast.error(error.response?.data?.message);
     }
   };
 
