@@ -3,6 +3,19 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import API from "../services/api.js";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import {
+  PieChart,
+  Pie,
+  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+  Cell,
+  Legend,
+} from "recharts";
 
 function Dashboard() {
   const { user, logout } = useContext(AuthContext);
@@ -14,6 +27,37 @@ function Dashboard() {
   const [category, setCategory] = useState("");
   const [editId, setEditId] = useState(null);
   const [filter, setFilter] = useState("All");
+  const COLORS = [
+    "#3b82f6", // blue
+    "#22c55e", // green
+    "#f97316", // orange
+    "#ef4444", // red
+    "#a855f7", // purple
+    "#14b8a6", // teal
+    "#eab308", // yellow
+  ];
+
+  const getMonthlyTotal = () => {
+    const currentMonth = new Date().getMonth();
+
+    return expenses
+      .filter((exp) => new Date(exp.createdAt).getMonth() === currentMonth)
+      .reduce((total, exp) => total + Number(exp.amount), 0);
+  };
+
+  const categoryData = () => {
+    const map = {};
+
+    expenses.forEach((exp) => {
+      map[exp.category] = (map[exp.category] || 0) + Number(exp.amount);
+    });
+
+    return Object.keys(map).map((key, index) => ({
+      name: key,
+      value: map[key],
+      fill: COLORS[index % COLORS.length],
+    }));
+  };
 
   // Fetch expenses
   const fetchExpenses = async () => {
@@ -86,6 +130,60 @@ function Dashboard() {
         >
           Logout
         </button>
+      </div>
+
+      {/* SUMMARY CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="text-gray-600">Total Expenses</h3>
+          <p className="text-xl font-bold">
+            ₹{expenses.reduce((t, e) => t + Number(e.amount), 0)}
+          </p>
+        </div>
+
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="text-gray-600">This Month</h3>
+          <p className="text-xl font-bold">₹{getMonthlyTotal()}</p>
+        </div>
+      </div>
+
+      {/* CHARTS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        {/* CATEGORY PIE CHART */}
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="font-bold mb-2">Category Breakdown</h3>
+
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={categoryData()}
+                dataKey="value"
+                nameKey="name"
+                cx="50%"
+                cy="50%"
+                outerRadius={80}
+                label
+              />
+              <Legend />
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* BAR CHART */}
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="font-bold mb-2">Expense Overview</h3>
+
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={categoryData()}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="value" fill="#22c55e" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       <div className="bg-white p-4 rounded shadow mb-4">
