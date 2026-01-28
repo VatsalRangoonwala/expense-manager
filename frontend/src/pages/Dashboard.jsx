@@ -28,6 +28,7 @@ function Dashboard() {
   const [category, setCategory] = useState("");
   const [editId, setEditId] = useState(null);
   const [filter, setFilter] = useState("All");
+  const axisColor = theme === "dark" ? "white" : "black";
   const COLORS = [
     "#3b82f6", // blue
     "#22c55e", // green
@@ -189,8 +190,8 @@ function Dashboard() {
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={categoryData()}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
+              <XAxis dataKey="name" tick={{ fill: axisColor }} />
+              <YAxis tick={{ fill: axisColor }} />
               <Tooltip />
               <Bar dataKey="value" />
             </BarChart>
