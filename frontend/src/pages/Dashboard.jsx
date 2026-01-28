@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import API from "../services/api.js";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../context/ThemeContext.jsx";
 import toast from "react-hot-toast";
 import {
   PieChart,
@@ -13,12 +14,12 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
-  Cell,
   Legend,
 } from "recharts";
 
 function Dashboard() {
   const { user, logout } = useContext(AuthContext);
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
 
   const [expenses, setExpenses] = useState([]);
@@ -121,28 +122,39 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-200 dark:bg-slate-900 p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Welcome {user.name}</h2>
-        <button
-          className="bg-black text-white px-3 py-1 rounded"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
+        <h2 className="text-xl font-bold dark:text-white">
+          Welcome {user.name}
+        </h2>
+        <div className="flex gap-2">
+          <button
+            onClick={toggleTheme}
+            className="px-3 py-1 rounded dark:bg-gray-200 bg-slate-800 text-white dark:text-black cursor-pointer"
+          >
+            {theme === "dark" ? "☀ Light" : "🌙 Dark"}
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="bg-white px-3 py-1 rounded dark:bg-slate-800 dark:text-white cursor-pointer"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* SUMMARY CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="text-gray-600">Total Expenses</h3>
+        <div className="bg-white dark:bg-slate-800 dark:text-white p-4 rounded shadow">
+          <h3 className="text-gray-600 dark:text-white">Total Expenses</h3>
           <p className="text-xl font-bold">
             ₹{expenses.reduce((t, e) => t + Number(e.amount), 0)}
           </p>
         </div>
 
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="text-gray-600">This Month</h3>
+        <div className="bg-white dark:bg-slate-800 dark:text-white p-4 rounded shadow">
+          <h3 className="text-gray-600 dark:text-white">This Month</h3>
           <p className="text-xl font-bold">₹{getMonthlyTotal()}</p>
         </div>
       </div>
@@ -150,8 +162,8 @@ function Dashboard() {
       {/* CHARTS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {/* CATEGORY PIE CHART */}
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="font-bold mb-2">Category Breakdown</h3>
+        <div className="bg-white p-4 rounded shadow dark:bg-slate-800">
+          <h3 className="font-bold mb-2 dark:text-white">Category Breakdown</h3>
 
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
@@ -171,8 +183,8 @@ function Dashboard() {
         </div>
 
         {/* BAR CHART */}
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="font-bold mb-2">Expense Overview</h3>
+        <div className="bg-white p-4 rounded shadow dark:bg-slate-800">
+          <h3 className="font-bold mb-2 dark:text-white">Expense Overview</h3>
 
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={categoryData()}>
@@ -180,20 +192,20 @@ function Dashboard() {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="value" fill="#22c55e" />
+              <Bar dataKey="value" />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded shadow mb-4">
+      <div className="bg-white p-4 rounded shadow mb- dark:bg-slate-800 dark:text-white">
         <h3>Add Expense</h3>
         <form
           className="grid grid-cols-1 md:grid-cols-3 gap-2"
           onSubmit={addExpense}
         >
           <input
-            className="border p-2 rounded"
+            className="border p-2 rounded dark:bg-slate-700 dark:text-white dark:border-slate-600"
             name="title"
             placeholder="Title"
             value={title}
@@ -201,7 +213,7 @@ function Dashboard() {
           />
 
           <input
-            className="border p-2 rounded"
+            className="border p-2 rounded dark:bg-slate-700 dark:text-white dark:border-slate-600"
             name="amount"
             type="number"
             placeholder="Amount"
@@ -210,7 +222,7 @@ function Dashboard() {
           />
 
           <select
-            className="border p-2 rounded"
+            className="border p-2 rounded dark:bg-slate-700 dark:text-white dark:border-slate-600"
             name="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -224,7 +236,7 @@ function Dashboard() {
           </select>
 
           <button
-            className="bg-green-700 text-white p-2 rounded md:col-span-3"
+            className="bg-green-700 text-white p-2 rounded md:col-span-3 cursor-pointer"
             type="submit"
           >
             {editId ? "Update Expense" : "Add Expense"}
@@ -232,7 +244,7 @@ function Dashboard() {
         </form>
       </div>
       <select
-        className="border p-2 mb-3 rounded"
+        className="border p-2 mb-3 mt-3 rounded dark:bg-slate-700 dark:text-white dark:border-slate-600"
         onChange={(e) => setFilter(e.target.value)}
       >
         <option>All</option>
@@ -247,19 +259,19 @@ function Dashboard() {
 
           .map((expense) => (
             <div
-              className="bg-white p-3 rounded shadow flex justify-between items-center"
+              className="bg-white p-3 rounded shadow flex justify-between items-center dark:bg-slate-800"
               key={expense._id}
             >
               <div>
-                <p className="font-semibold">{expense.title}</p>
-                <p className="text-sm text-gray-600">
+                <p className="font-semibold dark:text-white">{expense.title}</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
                   ₹{expense.amount} • {expense.category}
                 </p>
               </div>
 
               <div className="space-x-2">
                 <button
-                  className="bg-gray-300 px-2 py-1 rounded"
+                  className="bg-gray-200 px-2 py-1 rounded cursor-pointer"
                   onClick={() => {
                     setEditId(expense._id);
                     setTitle(expense.title);
@@ -271,7 +283,7 @@ function Dashboard() {
                 </button>
 
                 <button
-                  className="bg-red-500 text-white px-2 py-1 rounded"
+                  className="bg-red-500 text-white px-2 py-1 rounded cursor-pointer"
                   onClick={() => deleteExpense(expense._id)}
                 >
                   Delete

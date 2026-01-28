@@ -27,7 +27,7 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-200">
       <form
         className="bg-white p-6 rounded-xl shadow-lg w-80"
         onSubmit={handleSubmit}
@@ -61,7 +61,7 @@ function Register() {
         />
 
         <button
-          className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
+          className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700 cursor-pointer"
           type="submit"
         >
           Register
@@ -69,7 +69,7 @@ function Register() {
 
         <p className="text-center mt-3 text-sm">
           Already have account?{" "}
-          <Link className="text-green-500 ml-1" to="/">
+          <Link className="text-green-600 ml-1" to="/">
             Login
           </Link>
         </p>

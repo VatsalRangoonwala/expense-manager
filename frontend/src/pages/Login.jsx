@@ -24,7 +24,7 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-200">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-xl shadow-lg w-80"
@@ -50,7 +50,7 @@ function Login() {
         />
 
         <button
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 cursor-pointer"
           type="submit"
         >
           Login
