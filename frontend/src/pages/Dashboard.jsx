@@ -244,7 +244,7 @@ function Dashboard() {
         </form>
       </div>
       <select
-        className="border p-2 mb-3 mt-3 rounded dark:bg-slate-700 dark:text-white dark:border-slate-600"
+        className="border p-2 mb-3 mt-3 rounded dark:bg-slate-900 dark:text-white dark:border-slate-500"
         onChange={(e) => setFilter(e.target.value)}
       >
         <option>All</option>
