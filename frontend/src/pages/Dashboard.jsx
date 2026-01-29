@@ -54,6 +54,7 @@ function Dashboard() {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(true);
   const [expenses, setExpenses] = useState([]);
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
@@ -100,6 +101,8 @@ function Dashboard() {
       setExpenses(res.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -151,8 +154,18 @@ function Dashboard() {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/login");
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center dark:bg-slate-900 bg-gray-200">
+        <h2 className="text-xl font-semibold animate-pulse dark:text-white">
+          Loading Dashboard...
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-200 dark:bg-slate-900 p-4">
