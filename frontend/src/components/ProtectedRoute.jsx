@@ -6,7 +6,7 @@ function ProtectedRoute({ children }) {
   const { token, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <h3>Loading...</h3>;
+    return;
   }
 
   if (!token) {
