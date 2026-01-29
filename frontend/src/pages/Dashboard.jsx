@@ -55,6 +55,7 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [expenses, setExpenses] = useState([]);
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
@@ -113,8 +114,10 @@ function Dashboard() {
   // Add expense
   const addExpense = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
     try {
+      setIsSubmitting(true);
       if (editId) {
         const res = await API.put(`/expense/${editId}`, {
           title: title.trim(),
@@ -138,17 +141,23 @@ function Dashboard() {
       fetchExpenses();
     } catch (error) {
       toast.error(error.response.data.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   // Delete expense
   const deleteExpense = async (id) => {
+    if (isSubmitting) return;
     try {
+      setIsSubmitting(true);
       const res = await API.delete(`/expense/${id}`);
       fetchExpenses();
       toast.success(res.data.message);
     } catch (error) {
       toast.error(error.response.data.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -281,7 +290,7 @@ function Dashboard() {
             <option>Other</option>
           </select>
 
-          <button
+          <button disabled={isSubmitting}
             className="bg-green-700 text-white p-2 rounded md:col-span-3 cursor-pointer"
             type="submit"
           >
