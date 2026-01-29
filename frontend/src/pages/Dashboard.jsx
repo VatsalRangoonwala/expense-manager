@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, memo, useMemo } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import API from "../services/api.js";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,38 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+
+const ExpenseItem = memo(({ expense, onEdit, onDelete }) => {
+  return (
+    <div
+      className="bg-white p-3 rounded shadow flex justify-between items-center dark:bg-slate-800"
+      key={expense._id}
+    >
+      <div>
+        <p className="font-semibold dark:text-white">{expense.title}</p>
+        <p className="text-sm text-gray-700 dark:text-gray-300">
+          ₹{expense.amount} • {expense.category}
+        </p>
+      </div>
+
+      <div className="space-x-2">
+        <button
+          className="bg-gray-200 px-2 py-1 rounded cursor-pointer"
+          onClick={() => onEdit(expense)}
+        >
+          Edit
+        </button>
+
+        <button
+          className="bg-red-500 text-white px-2 py-1 rounded cursor-pointer"
+          onClick={() => onDelete(expense._id)}
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+});
 
 function Dashboard() {
   const { user, logout } = useContext(AuthContext);
@@ -47,7 +79,7 @@ function Dashboard() {
       .reduce((total, exp) => total + Number(exp.amount), 0);
   };
 
-  const categoryData = () => {
+  const categoryData = useMemo(() => {
     const map = {};
 
     expenses.forEach((exp) => {
@@ -59,7 +91,7 @@ function Dashboard() {
       value: map[key],
       fill: COLORS[index % COLORS.length],
     }));
-  };
+  }, [expenses]);
 
   // Fetch expenses
   const fetchExpenses = async () => {
@@ -169,7 +201,7 @@ function Dashboard() {
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
-                data={categoryData()}
+                data={categoryData}
                 dataKey="value"
                 nameKey="name"
                 cx="50%"
@@ -188,7 +220,7 @@ function Dashboard() {
           <h3 className="font-bold mb-2 dark:text-white">Expense Overview</h3>
 
           <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={categoryData()}>
+            <BarChart data={categoryData}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" tick={{ fill: axisColor }} />
               <YAxis tick={{ fill: axisColor }} />
@@ -257,40 +289,18 @@ function Dashboard() {
       <div className="grid gap-2">
         {expenses
           .filter((exp) => (filter === "All" ? true : exp.category === filter))
-
           .map((expense) => (
-            <div
-              className="bg-white p-3 rounded shadow flex justify-between items-center dark:bg-slate-800"
+            <ExpenseItem
               key={expense._id}
-            >
-              <div>
-                <p className="font-semibold dark:text-white">{expense.title}</p>
-                <p className="text-sm text-gray-700 dark:text-gray-300">
-                  ₹{expense.amount} • {expense.category}
-                </p>
-              </div>
-
-              <div className="space-x-2">
-                <button
-                  className="bg-gray-200 px-2 py-1 rounded cursor-pointer"
-                  onClick={() => {
-                    setEditId(expense._id);
-                    setTitle(expense.title);
-                    setAmount(expense.amount);
-                    setCategory(expense.category);
-                  }}
-                >
-                  Edit
-                </button>
-
-                <button
-                  className="bg-red-500 text-white px-2 py-1 rounded cursor-pointer"
-                  onClick={() => deleteExpense(expense._id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
+              expense={expense}
+              onEdit={(exp) => {
+                setEditId(exp._id);
+                setTitle(exp.title);
+                setAmount(exp.amount);
+                setCategory(exp.category);
+              }}
+              onDelete={deleteExpense}
+            />
           ))}
       </div>
     </div>
