@@ -290,7 +290,8 @@ function Dashboard() {
             <option>Other</option>
           </select>
 
-          <button disabled={isSubmitting}
+          <button
+            disabled={isSubmitting}
             className="bg-green-700 text-white p-2 rounded md:col-span-3 cursor-pointer"
             type="submit"
           >

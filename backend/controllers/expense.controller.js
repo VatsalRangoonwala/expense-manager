@@ -25,7 +25,6 @@ export const addExpense = async (req, res) => {
       expense,
     });
   } catch (error) {
-    console.log(error.message);
     return res.status(500).json({ message: error.message });
   }
 };
@@ -33,9 +32,12 @@ export const addExpense = async (req, res) => {
 // GET ALL EXPENSES
 export const getExpenses = async (req, res) => {
   try {
-    const expenses = await Expense.find({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
+    const expenses = await Expense.find({ user: req.user._id })
+      .select("title amount category createdAt")
+      .sort({
+        createdAt: -1,
+      })
+      .lean();
     return res.status(200).json(expenses);
   } catch (error) {
     return res.status(500).json({ message: error.message });
