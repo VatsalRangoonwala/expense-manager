@@ -14,9 +14,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await API.post("/auth/login", { email, password });
-      login(res.data.user, res.data.token);
-      toast.success(res.data.message);
+      login(email, password);
       navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message);

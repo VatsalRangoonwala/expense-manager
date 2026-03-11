@@ -47,7 +47,7 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ email:email });
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -67,10 +67,16 @@ export const loginUser = async (req, res) => {
       expiresIn: "7d",
     });
 
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     return res.status(200).json({
       success: true,
       message: "User logged in successfully",
-      token,
       user: {
         id: user._id,
         name: user.name,
@@ -80,4 +86,21 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+export const logout = async (req, res) => {
+  res.clearCookie("token");
+  return res.status(200).json({
+    success: true,
+    message: "Logged out",
+  });
+};
+
+export const getUser = async (req, res) => {
+  const user = req.user;
+  return res.status(200).json({
+    success: true,
+    message: "User details fetched",
+    user,
+  });
 };
