@@ -26,8 +26,14 @@ export function AuthProvider({ children }) {
 
   // Login
   const login = async (email, password) => {
-    const res = await api.post("/auth/login", { email, password });
-    setUser(res.data.user);
+    const res = await api.post(
+      "/auth/login",
+      { email, password },
+      { withCredentials: true },
+    );
+    if (res.data.success) {
+      setUser(res.data.user);
+    }
     toast.success(res.data.message);
   };
 
