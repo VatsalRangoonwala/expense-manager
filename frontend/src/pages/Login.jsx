@@ -2,18 +2,27 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import API from "../services/api.js";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      login(email, password);
+      const res = await API.post(
+        "/auth/login",
+        { email, password },
+        { withCredentials: true },
+      );
+      if (res.data.success) {
+        setUser(res.data.user);
+      }
+      toast.success(res.data.message);
       navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message);

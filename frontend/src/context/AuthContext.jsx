@@ -24,18 +24,6 @@ export function AuthProvider({ children }) {
     checkAuth();
   }, []);
 
-  // Login
-  const login = async (email, password) => {
-    const res = await api.post(
-      "/auth/login",
-      { email, password },
-      { withCredentials: true },
-    );
-    if (res.data.success) {
-      setUser(res.data.user);
-    }
-    toast.success(res.data.message);
-  };
 
   // Logout
   const logout = async () => {
@@ -44,7 +32,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, logout, loading, setUser }}>
       {children}
     </AuthContext.Provider>
   );
