@@ -47,13 +47,19 @@ function Login() {
         />
 
         <input
-          className="w-full border p-2 mb-3 rounded"
+          className="w-full border p-2 mb-2 rounded"
           name="password"
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        <div className="text-right mb-3">
+          <Link className="text-blue-500 text-sm" to="/forgot-password">
+            Forgot password?
+          </Link>
+        </div>
 
         <button
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 cursor-pointer"
