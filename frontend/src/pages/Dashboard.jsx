@@ -17,6 +17,16 @@ import {
   Legend,
 } from "recharts";
 
+const COLORS = [
+  "#3b82f6",
+  "#22c55e",
+  "#f97316",
+  "#ef4444",
+  "#a855f7",
+  "#14b8a6",
+  "#eab308",
+];
+
 const ExpenseItem = memo(({ expense, onEdit, onDelete }) => {
   return (
     <div
@@ -63,15 +73,6 @@ function Dashboard() {
   const [editId, setEditId] = useState(null);
   const [filter, setFilter] = useState("All");
   const axisColor = theme === "dark" ? "white" : "black";
-  const COLORS = [
-    "#3b82f6", // blue
-    "#22c55e", // green
-    "#f97316", // orange
-    "#ef4444", // red
-    "#a855f7", // purple
-    "#14b8a6", // teal
-    "#eab308", // yellow
-  ];
 
   const getMonthlyTotal = () => {
     const currentMonth = new Date().getMonth();

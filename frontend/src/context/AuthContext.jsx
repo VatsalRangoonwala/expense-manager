@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import api from "../services/api";
-import toast from "react-hot-toast";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -14,7 +14,7 @@ export function AuthProvider({ children }) {
       try {
         const res = await api.get("/auth/me");
         setUser(res.data.user);
-      } catch (err) {
+      } catch {
         setUser(null);
       } finally {
         setLoading(false);
@@ -23,7 +23,6 @@ export function AuthProvider({ children }) {
 
     checkAuth();
   }, []);
-
 
   // Logout
   const logout = async () => {
